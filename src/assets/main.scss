@@ -1,0 +1,15 @@
+@import './base.scss';
+@import './utils.scss';
+
+.container {
+  margin-inline: auto;
+  max-width: 1400px;
+}
+
+.box-card {
+  margin-block: 0.24rem;
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+  }
+}
