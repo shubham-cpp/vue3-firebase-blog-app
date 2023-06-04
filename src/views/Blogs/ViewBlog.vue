@@ -1,5 +1,5 @@
 <template>
-  <form ref="rulesRef" :model="form" :rules="rules" @submit.prevent="handleSubmit">
+  <form ref="formRef" :model="form" :rules="rules" @submit.prevent="handleSubmit">
     <ElCard class="box-card">
       <template #header>
         <div class="card-header">
@@ -118,7 +118,7 @@ const form = reactive<Blog>({
   ...defaultBlog,
   id: params.id
 })
-const rulesRef = ref<FormInstance>()
+const formRef = ref<FormInstance>()
 const rules = reactive(rulesObj)
 const router = useRouter()
 
@@ -140,16 +140,20 @@ onUnmounted(() => {
   unsubBlog()
 })
 const handleSubmit = () => {
-  isEditing.value = false
-  updateDoc(getBlogDocRef(params.id), form)
-    .then(() => {
-      console.log('Document successfully written!')
-      ElMessage.success('Blog successfully updated')
-    })
-    .catch((error) => {
-      console.error('Error writing document: ', error)
-      ElMessage.error('Error while updating the blog')
-    })
+  formRef.value?.validate((valid) => {
+    if (!valid) return
+
+    isEditing.value = false
+    updateDoc(getBlogDocRef(params.id), form)
+      .then(() => {
+        console.log('Document successfully written!')
+        ElMessage.success('Blog successfully updated')
+      })
+      .catch((error) => {
+        console.error('Error writing document: ', error)
+        ElMessage.error('Error while updating the blog')
+      })
+  })
 }
 const deleteBlog = () => {
   deleteDoc(getBlogDocRef(params.id))

@@ -1,5 +1,5 @@
 <template>
-  <ElForm ref="rulesRef" :model="form" :rules="rules" @submit.prevent="handleSubmit">
+  <ElForm ref="formRef" :model="form" :rules="rules" @submit.prevent="handleSubmit">
     <ElFormItem label="Blog Title" prop="title">
       <ElInput v-model="form.title" size="large" placeholder="Some interesting title" />
     </ElFormItem>
@@ -24,7 +24,7 @@
 
     <ElFormItem class="mt-10" required>
       <ElButton type="primary" native-type="submit">Submit</ElButton>
-      <ElButton @click="rulesRef?.resetFields()">Reset</ElButton>
+      <ElButton @click="formRef?.resetFields()">Reset</ElButton>
       <ElButton @click="router.push('/')">Cancel</ElButton>
     </ElFormItem>
   </ElForm>
@@ -42,7 +42,7 @@ import { QuillEditor } from '@vueup/vue-quill'
 
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
-const rulesRef = ref<FormInstance>()
+const formRef = ref<FormInstance>()
 const rules = reactive(rulesObj)
 const router = useRouter()
 
@@ -52,14 +52,20 @@ const tags = ['food', 'computer', 'programming', 'travel']
 const handleSubmit = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, ...rest } = form
-  addDoc(blogsCollectionRef, rest)
-    .then((savedDoc) => {
-      ElMessage.success('Blog has been created')
-      router.push(`/blogs/${savedDoc.id}`)
-    })
-    .catch((error) => {
-      console.error(error)
-      ElMessage.error('Error while creating the blog')
-    })
+  formRef.value?.validate((valid) => {
+    if (valid) {
+      addDoc(blogsCollectionRef, rest)
+        .then((savedDoc) => {
+          ElMessage.success('Blog has been created')
+          router.push(`/blogs/${savedDoc.id}`)
+        })
+        .catch((error) => {
+          console.error(error)
+          ElMessage.error('Error while creating the blog')
+        })
+    } else {
+      ElMessage.error('Mandatory fields are missing')
+    }
+  })
 }
 </script>
