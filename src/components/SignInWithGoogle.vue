@@ -11,14 +11,35 @@ import { auth, googleProvider } from '@/configs/firebase'
 import { ElMessage } from 'element-plus'
 import { signInWithPopup } from 'firebase/auth'
 import { useRouter } from 'vue-router'
+import { computed } from 'vue'
+import { useUserStore } from '@/stores/user'
+
+interface Props {
+  isModalVisible?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), { isModalVisible: false })
+
+const emit = defineEmits<{
+  (e: 'update:isModalVisible', value: boolean): void
+}>()
+
+const dialogVisible = computed({
+  get: () => props.isModalVisible,
+  set: (value: boolean) => emit('update:isModalVisible', value)
+})
 
 const router = useRouter()
+const userStore = useUserStore()
 
 const handleClick = () => {
+  console.log(auth.currentUser)
   signInWithPopup(auth, googleProvider)
-    .then(() => {
+    .then((user) => {
       ElMessage.success('Successfully logged in')
       router.push('/')
+      dialogVisible.value = false
+      userStore.setUser(user.user)
     })
     .catch((error) => {
       console.log(error)

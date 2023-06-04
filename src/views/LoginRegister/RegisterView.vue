@@ -33,6 +33,22 @@ import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { addDoc } from 'firebase/firestore'
 import { auth } from '@/configs/firebase'
 import { getUsersCollectionRef } from '@/utils'
+import { computed } from 'vue'
+
+interface Props {
+  isModalVisible?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), { isModalVisible: false })
+
+const emit = defineEmits<{
+  (e: 'update:isModalVisible', value: boolean): void
+}>()
+
+const dialogVisible = computed({
+  get: () => props.isModalVisible,
+  set: (value: boolean) => emit('update:isModalVisible', value)
+})
 
 const registerFormRef = ref<FormInstance>()
 const registerForm = reactive({
@@ -99,13 +115,14 @@ const handleSubmit = () => {
   registerFormRef.value?.validate(async (valid) => {
     if (!valid) return
     try {
-      createUserWithEmailAndPassword(auth, registerForm.email, registerForm.password)
-      addDoc(getUsersCollectionRef(), {
+      await createUserWithEmailAndPassword(auth, registerForm.email, registerForm.password)
+      await addDoc(getUsersCollectionRef(), {
         fullName: registerForm.fullName,
         email: registerForm.email,
         provider: 'local',
         createdAt: Date.now()
       })
+      dialogVisible.value = false
     } catch (error) {
       console.log(error)
       ElMessage.error('Something went wrong')

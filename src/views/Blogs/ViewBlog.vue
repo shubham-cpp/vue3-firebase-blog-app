@@ -1,5 +1,5 @@
 <template>
-  <form ref="formRef" :model="form" :rules="rules" @submit.prevent="handleSubmit">
+  <ElForm ref="formRef" :model="form" :rules="rules" @submit.prevent="handleSubmit">
     <ElCard class="box-card">
       <template #header>
         <div class="card-header">
@@ -92,7 +92,7 @@
         </ElTag>
       </div>
     </ElCard>
-  </form>
+  </ElForm>
 </template>
 
 <script setup lang="ts">
@@ -140,7 +140,7 @@ onUnmounted(() => {
   unsubBlog()
 })
 const handleSubmit = () => {
-  formRef.value?.validate((valid) => {
+  formRef?.value?.validate((valid) => {
     if (!valid) return
 
     isEditing.value = false

@@ -26,6 +26,23 @@ import { signInWithEmailAndPassword } from 'firebase/auth'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { computed } from 'vue'
+
+interface Props {
+  isModalVisible?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), { isModalVisible: false })
+
+const emit = defineEmits<{
+  (e: 'update:isModalVisible', value: boolean): void
+}>()
+
+const dialogVisible = computed({
+  get: () => props.isModalVisible,
+  set: (value: boolean) => emit('update:isModalVisible', value)
+})
+
 const router = useRouter()
 const loginFormRef = ref<FormInstance>()
 const loginForm = reactive({
@@ -64,6 +81,7 @@ const handleSubmit = () => {
       .then(() => {
         ElMessage.success('Successfully logged in')
         router.push('/')
+        dialogVisible.value = false
       })
       .catch((error) => {
         ElMessage.error(error.message)

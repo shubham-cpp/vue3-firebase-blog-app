@@ -12,7 +12,7 @@
         <ElMenuItem index="3">
           <RouterLink to="/add/blog">Add Blog</RouterLink>
         </ElMenuItem>
-        <ElMenuItem v-if="auth?.currentUser == null" index="4">
+        <ElMenuItem v-if="userStore.getUser == null" index="4">
           <div
             role="button"
             tabindex="0"
@@ -52,6 +52,10 @@ import { ref } from 'vue'
 import LoginRegisterView from '@/views/LoginRegister/LoginRegisterTab.vue'
 import { auth } from '@/configs/firebase'
 import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
+
 const activeIndex = ref('1')
 const isModalVisible = ref(false)
 
@@ -64,6 +68,7 @@ const handleLogout = () => {
       ElMessage.success('Successfully logged out')
       router.push('/')
       isModalVisible.value = true
+      userStore.setUser(null)
     })
     .catch((error) => {
       ElMessage.error('There was an error while logging out.')

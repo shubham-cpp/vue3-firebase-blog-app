@@ -2,16 +2,16 @@
   <ElDialog v-model="dialogVisible" :before-close="handleClose">
     <ElTabs v-model="activeTabName" stretch>
       <ElTabPane label="Login" name="Login">
-        <LoginView class="tab-login-register" />
+        <LoginView v-model:is-modal-visible="dialogVisible" class="tab-login-register" />
       </ElTabPane>
 
       <ElTabPane label="Register" name="Register">
-        <RegisterView class="tab-login-register" />
+        <RegisterView v-model:is-modal-visible="dialogVisible" class="tab-login-register" />
       </ElTabPane>
     </ElTabs>
     <p class="text-center">OR</p>
     <template #footer>
-      <SignInWithGoogle />
+      <SignInWithGoogle v-model:is-modal-visible="dialogVisible" />
     </template>
   </ElDialog>
 </template>
@@ -37,9 +37,10 @@ const dialogVisible = computed({
   set: (value: boolean) => emit('update:isModalVisible', value)
 })
 const activeTabName = ref<'Login' | 'Register'>('Login')
-const handleClose = () => {
+const handleClose = (done: () => void) => {
   activeTabName.value = 'Login'
   emit('beforeClose')
+  done()
 }
 </script>
 
