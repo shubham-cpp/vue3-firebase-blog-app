@@ -1,5 +1,9 @@
 <template>
-  <ElDialog v-model="dialogVisible" :before-close="handleClose">
+  <ElDialog
+    v-model="dialogVisible"
+    :before-close="handleClose"
+    :width="isLargeScreen ? '50%' : '90%'"
+  >
     <ElTabs v-model="activeTabName" stretch>
       <ElTabPane label="Login" name="Login">
         <LoginView v-model:is-modal-visible="dialogVisible" class="tab-login-register" />
@@ -17,6 +21,7 @@
 </template>
 
 <script setup lang="ts">
+import { useMediaQuery } from '@vueuse/core'
 import LoginView from './LoginView.vue'
 import RegisterView from './RegisterView.vue'
 import SignInWithGoogle from '@/components/SignInWithGoogle.vue'
@@ -27,6 +32,8 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), { isModalVisible: false })
+
+const isLargeScreen = useMediaQuery('(min-width: 800px)')
 const emit = defineEmits<{
   (e: 'update:isModalVisible', value: boolean): void
   (e: 'beforeClose'): void

@@ -23,10 +23,8 @@
 import { auth } from '@/configs/firebase'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-
-import { computed } from 'vue'
 
 interface Props {
   isModalVisible?: boolean
