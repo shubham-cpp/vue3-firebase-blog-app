@@ -70,7 +70,7 @@
         content-type="html"
       />
       <!-- <ckeditor v-if="isEditing" v-model="editorData" :editor="editor"  /> -->
-      <div v-else v-html="form.content"></div>
+    <div v-else v-html="form.content"></div>
       <ElFormItem v-if="isEditing" label="Tags" prop="tags">
         <ElSelect
           v-model="form.tags"

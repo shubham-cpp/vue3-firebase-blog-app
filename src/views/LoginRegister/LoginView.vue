@@ -2,7 +2,7 @@
   <ElForm
     ref="loginFormRef"
     :rules="loginFormRules"
-    :data="loginForm"
+    :model="loginForm"
     label-width="150"
     @submit.prevent="handleSubmit"
   >
@@ -53,10 +53,10 @@ const loginFormRules = reactive<FormRules>({
     {
       validator: (_rule, value, callback) => {
         // if value doesn't match a email regex throw error
-        if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-          callback(new Error('Please enter a valid email address'))
-        } else {
+        if (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
           callback()
+        } else {
+          callback(new Error('Please enter a valid email address'))
         }
       }
     }

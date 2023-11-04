@@ -2,7 +2,7 @@
   <ElForm
     ref="registerFormRef"
     :rules="registerFormRules"
-    :data="registerForm"
+    :model="registerForm"
     label-width="150"
     @submit.prevent="handleSubmit"
   >
@@ -51,42 +51,45 @@ const dialogVisible = computed({
 })
 
 const registerFormRef = ref<FormInstance>()
-const registerForm = reactive({
+type RegisterForm = {
+  fullName: string
+  email: string
+  password: string
+  confirmPassword: string
+}
+const registerForm = reactive<RegisterForm>({
   fullName: '',
   email: '',
   password: '',
   confirmPassword: ''
 })
-const registerFormRules = reactive<FormRules>({
+const registerFormRules = reactive<FormRules<RegisterForm>>({
   fullName: [
-    { required: true, message: 'Please input full name', trigger: 'blur' },
+    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+    { min: 3, max: 20, message: 'Length should be 3 to 20', trigger: 'change' },
     {
-      min: 3,
-      max: 20,
-      message: 'The full name length cannot be less than 3 or more than 20'
-    },
-    {
-      validator: (_rule, value, callback) => {
-        if (!/^[A-Za-z]{3,20} [A-Za-z]{3,20}$/i.test(value)) {
-          callback(new Error('Please enter a valid full name'))
-        } else {
-          callback()
-        }
-      }
+      pattern: /^[A-Za-z]{3,20} [A-Za-z]{3,20}$/i,
+      message: 'Full name must be in the format "First Last"',
+      trigger: 'change'
     }
   ],
   email: [
     { required: true, message: 'Please input email', trigger: 'blur' },
     {
-      validator: (_rule, value, callback) => {
-        // if value doesn't match a email regex throw error
-        if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-          callback(new Error('Please enter a valid email address'))
-        } else {
-          callback()
-        }
-      }
+      pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+      message: 'Please enter a valid email address',
+      trigger: 'blur'
     }
+    // {
+    //   validator: (_rule, value, callback) => {
+    //     // if value doesn't match a email regex throw error
+    //     if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
+    //       callback(new Error('Please enter a valid email address'))
+    //     } else {
+    //       callback()
+    //     }
+    //   }
+    // }
   ],
   password: [
     { required: true, message: 'Please input your password', trigger: 'blur' },
